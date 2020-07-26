@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
-import { ModalContext, ModalType } from "./ModalContext";
+import * as React from "react";
+import { ModalContext, ModalType, ModalTypeExtract } from "./ModalContext";
+import { ModalConsumerContext } from "./ModalConsumerContext";
 
 /**
  * Callback types provided for descriptive type-hints
@@ -36,22 +38,32 @@ const isFunctionalComponent = (Component: Function) => {
 /**
  * React hook for showing modal windows
  */
-export const useModal = (
-  component: ModalType,
-  inputs: any[] = []
+export const useModal = <M extends ModalType, P extends ModalTypeExtract<M>>(
+  ModalComponent: M,
+  props: P = {} as any
 ): [ShowModal, HideModal] => {
-  if (!isFunctionalComponent(component)) {
+  if (!isFunctionalComponent(ModalComponent)) {
     throw new Error(
       "Only stateless components can be used as an argument to useModal. You have probably passed a class component where a function was expected."
     );
   }
 
   const key = useMemo(generateModalKey, []);
-  const modal = useMemo(() => component, inputs);
   const context = useContext(ModalContext);
-  const [isShown, setShown] = useState<boolean>(false);
   const showModal = useCallback(() => setShown(true), []);
   const hideModal = useCallback(() => setShown(false), []);
+  const [isShown, setShown] = useState<boolean>(false);
+
+  const modal = () => {
+    const modalProps: any = { hideModal, ...props };
+    const contextValue = useMemo(() => ({ hideModal }), []);
+
+    return (
+      <ModalConsumerContext.Provider value={contextValue}>
+        <ModalComponent {...modalProps} />
+      </ModalConsumerContext.Provider>
+    );
+  };
 
   useEffect(() => {
     if (isShown) {
