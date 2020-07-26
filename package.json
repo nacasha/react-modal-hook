@@ -1,14 +1,17 @@
 {
-  "name": "react-modal-hook",
-  "version": "3.0.0",
+  "name": "@nacasha/react-modal-hook",
+  "version": "3.0.4",
   "description": "React hook for showing modal windows",
-  "author": "mpontus",
+  "author": "nacasha",
   "license": "MIT",
-  "repository": "mpontus/react-modal-hook",
+  "repository": "nacasha/react-modal-hook",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
   "sideEffects": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "engines": {
     "node": ">=8",
     "npm": ">=5"
@@ -17,8 +20,10 @@
     "test": "cross-env CI=1 jest",
     "test:watch": "jest --watch",
     "build": "rollup -c",
+    "types:watch": "tsc -w -d --declarationDir dist --emitDeclarationOnly",
+    "build:types": "tsc -d --declarationDir dist --emitDeclarationOnly",
     "start": "rollup -c -w",
-    "prepare": "yarn run build",
+    "prepare": "yarn run build && yarn run build:types",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
