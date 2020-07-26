@@ -19,11 +19,11 @@
   "scripts": {
     "test": "cross-env CI=1 jest",
     "test:watch": "jest --watch",
-    "build": "rollup -c",
+    "build": "rollup -c && tsc -d --declarationDir dist --emitDeclarationOnly",
     "types:watch": "tsc -w -d --declarationDir dist --emitDeclarationOnly",
     "build:types": "tsc -d --declarationDir dist --emitDeclarationOnly",
     "start": "rollup -c -w",
-    "prepare": "yarn run build && yarn run build:types",
+    "prepare": "yarn run build",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
