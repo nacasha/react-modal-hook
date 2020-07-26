@@ -1,6 +1,6 @@
 {
   "name": "@nacasha/react-modal-hook",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "React hook for showing modal windows",
   "author": "nacasha",
   "license": "MIT",
