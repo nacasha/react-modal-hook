@@ -6,7 +6,7 @@ import { ModalConsumerContext } from "./ModalConsumerContext";
 /**
  * Callback types provided for descriptive type-hints
  */
-type ShowModal = () => void;
+type ShowModal<P> = (props?: Partial<P>) => void;
 type HideModal = () => void;
 
 /**
@@ -41,7 +41,7 @@ const isFunctionalComponent = (Component: Function) => {
 export const useModal = <M extends ModalType, P extends ModalTypeExtract<M>>(
   ModalComponent: M,
   props: P = {} as any
-): [ShowModal, HideModal] => {
+): [ShowModal<P>, HideModal] => {
   if (!isFunctionalComponent(ModalComponent)) {
     throw new Error(
       "Only stateless components can be used as an argument to useModal. You have probably passed a class component where a function was expected."
@@ -49,13 +49,18 @@ export const useModal = <M extends ModalType, P extends ModalTypeExtract<M>>(
   }
 
   const key = useMemo(generateModalKey, []);
-  const context = useContext(ModalContext);
-  const showModal = useCallback(() => setShown(true), []);
-  const hideModal = useCallback(() => setShown(false), []);
   const [isShown, setShown] = useState<boolean>(false);
+  const [fnProps, setProps] = useState<any>({});
+
+  const context = useContext(ModalContext);
+  const hideModal = useCallback(() => setShown(false), []);
+  const showModal = useCallback((props?: any) => {
+    setProps(props);
+    setShown(true);
+  }, []);
 
   const modal = () => {
-    const modalProps: any = { hideModal, ...props };
+    const modalProps: any = { hideModal, ...props, ...fnProps };
     const contextValue = useMemo(() => ({ hideModal }), []);
 
     return (
