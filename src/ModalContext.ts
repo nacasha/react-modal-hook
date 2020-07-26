@@ -5,7 +5,8 @@ import * as React from "react";
  *
  * This is what gets passed to useModal as the first argument.
  */
-export type ModalType = React.FunctionComponent<any>;
+export type ModalType<T = any> = React.FunctionComponent<T>;
+export type ModalTypeExtract<P = any> = P extends ModalType<infer T> ? Omit<T, 'hideModal'> : any;
 
 /**
  * The shape of the modal context
